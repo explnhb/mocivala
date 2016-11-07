@@ -1,0 +1,57 @@
+Exo 1  : saisie de la fiche de renseignement :
+
+Contrôleur :
+-> Possède déjà l'identité de l'élève.
+-> Vérifie que la date de remplissage de la fiche de renseignement n'est pas dépassée. Si oui continuer, sinon abort (bdd handler).
+-> Demande à la bdd si une fiche de renseignement existe déjà (bdd handler).
+	|
+	-> (alt) Si oui : Propose de la changer. Si non : abort.
+		|
+		-> Si oui, getData() de la bdd, afficherData() pour l'élève.
+		-> Enregistrement par l'élève
+		-> SaveDansBdd()
+	-> Si non : Créer une fiche pour l'élève dans la bdd.
+
+
+==> Partir du principe qu'une fiche par étudiant existe déjà : Créer les fiches lors de l'arrivée d'une nouvelle promo.
+==> Lors d'un refus d'une fiche, créer une nouvelle fiche => Stockage de l'info stage refusé.
+
+--------------- Saisie de la fiche de renseignement ------------
+
+Contrôleur :
+
+-> Possède déjà l'identité de l'élève.
+-> Vérifie que la fiche de renseignement demandée est modifiable, sinon abort (bdd handler).
+-> Une fiche de renseignement existe déjà : GERER DANS LA CREATION D'UNE NOUVELLE PROMOTION.
+-> GetData() de la bdd
+-> AfficherData() pour l'élève.
+-> Attendre qu'on clique sur <<Enregistrer>>.
+-> SaveDansBdd().
+
+
+skinparam (Pour les paramètres d'affichage)
+
+@startuml
+
+participant Controleur
+participant DBHandler
+participant SheetHandler
+
+	note left : student_id contains the id of the student.
+	activate Controleur
+	--> Controleur : modif_sheet(student_id)
+	activate DBHandler
+	Controleur --> DBHandler : retrieve_sheet(student_id)
+	DBHandler --> Controleur : sheet = getLatestSheet(student_id)
+	activate SheetHandler
+	Controleur --> SheetHandler : isChangeable(sheet)
+	SheetHandler --> Controleur : changeable = isChangeable(sheet)
+	alt changeable = true
+		<-- Controleur : Show_Allow_Mod(sheet)
+		--> Controleur : update(sheet)
+		Controleur --> DBHandler : update(sheet, student_id)
+	else changeable = false
+		<-- Controleur : Show(sheet)
+	end
+
+@enduml
