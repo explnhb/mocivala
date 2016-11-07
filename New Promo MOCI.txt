@@ -1,0 +1,42 @@
+@startuml
+
+participant Controleur
+participant DBHandler
+participant PromoHandler
+
+note left : aaaa_aaaa is a variable containing the promo year.
+
+	activate Controleur
+	--> Controleur : addNewPromo(aaaa_aaaa)
+	activate DBHandler
+	Controleur --> DBHandler : isPromoExisting(aaaa_aaaa)
+	DBHandler --> Controleur : PromoExists = isPromoExisting(aaaa_aaaa)
+	activate PromoHandler
+	
+	alt PromoExists = true
+		Controleur --> PromoHandler : RetrievePromo(aaaa_aaaa)
+		PromoHandler --> DBHandler : GetPromo(aaaa_aaaa)
+		DBHandler --> PromoHandler : promo = getPromo(aaaa_aaaa)
+		PromoHandler --> Controleur : promo
+
+	else PromoExists = false
+		Controleur --> PromoHandler : CreatePromo(aaaa_aaaa)
+		PromoHandler --> PromoHandler : promo = CreatePromo(aaaa_aaaa)
+		PromoHandler --> DBHandler : GetStudentList(aaaa_aaaa)
+		DBHandler --> PromoHandler : StudentList = getStudentList(aaaa_aaaa)
+		loop for each student in StudentList
+            		PromoHandler --> PromoHandler : add(promo,student)
+		end
+		PromoHandler --> Controleur : promo
+
+	end
+	
+	<-- Controleur : promo
+	--> Controleur : SaveModif(aaaa_aaaa)
+	Controleur --> PromoHandler : SaveModif(aaaa_aaaa)
+	PromoHandler --> DBHandler : SaveModif(aaaa_aaaa)
+	deactivate DBHandler
+	deactivate PromoHandler
+	deactivate Controleur
+
+@enduml
