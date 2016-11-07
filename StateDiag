@@ -1,0 +1,41 @@
+@startuml
+
+[*]->TrouverUnStage
+TrouverUnStage->FicheDeRenseignement : Stage trouvé
+state FicheDeRenseignement {
+	state InitialisationFiche
+	InitialisationFiche : Créer fiche vierge
+	state RécupérerFiche
+	RécupérerFiche : Charger ancienne fiche	
+	RécupérerFiche->RemplissageFiche
+	InitialisationFiche->RemplissageFiche : Faire remplir
+	state RemplissageFiche
+	RemplissageFiche : Remplissage par élève
+	RemplissageFiche : Remplissage par entreprise
+	RemplissageFiche->Validation : Faire valider
+	state ValidationFiche
+	ValidationFiche : Validation du stage par TN
+}
+
+FicheDeRenseignement->NonValidée : Inadéquation
+
+FicheDeRenseignement->Validée : Ok
+
+state NonValidée {
+}
+
+NonValidée->TrouverUnStage : Retour au point de départ
+
+state Validée {
+	state EtablirConventionStage {
+		state InitialisationConvention
+		InitialisationConvention : Créer convention vierge
+		InitialisationConvention->Remplissage : Remplir
+		state Remplissage
+		Remplissage : Utiliser la fiche de renseignement pour remplir la convention
+		
+	}
+
+
+
+@enduml
