@@ -1,0 +1,18 @@
+@startuml
+
+Interface->Decision_Taker : verifie(student)
+Decision_Taker->BDD : loadSheet(student)
+Decision_Taker->BDD : loadStatus(student)
+BDD->BDD : FactSheet=getSheet(student)
+BDD->BDD : status=getStatus(student)
+BDD->Decision_Taker : FactSheet
+BDD->Decision_Taker : status
+alt status=Validated
+	Decision_Taker->Interface : Fiche déjà validée
+else 
+	Decision_Taker->Interface : submit(FactSheet)
+	Interface->Decision_Taker : newStatus
+	Decision_Taker->BDD : setStatus(newStatus)
+end
+
+@enduml
