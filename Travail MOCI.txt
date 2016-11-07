@@ -1,0 +1,64 @@
+Exo 1  : saisie de la fiche de renseignement :
+
+Contrôleur :
+-> Possède déjà l'identité de l'élève.
+-> Vérifie que la date de remplissage de la fiche de renseignement n'est pas dépassée. Si oui continuer, sinon abort (bdd handler).
+-> Demande à la bdd si une fiche de renseignement existe déjà (bdd handler).
+	|
+	-> (alt) Si oui : Propose de la changer. Si non : abort.
+		|
+		-> Si oui, getData() de la bdd, afficherData() pour l'élève.
+		-> Enregistrement par l'élève
+		-> SaveDansBdd()
+	-> Si non : Créer une fiche pour l'élève dans la bdd.
+
+
+==> Partir du principe qu'une fiche par étudiant existe déjà : Créer les fiches lors de l'arrivée d'une nouvelle promo.
+==> Lors d'un refus d'une fiche, créer une nouvelle fiche => Stockage de l'info stage refusé.
+
+--------------- Saisie de la fiche de renseignement ------------
+
+Contrôleur :
+
+-> Possède déjà l'identité de l'élève.
+-> Vérifie que la date de remplissage de la fiche de renseignement n'est pas dépassée. Si oui continuer, sinon abort (bdd handler).
+-> Une fiche de renseignement existe déjà : GERER DANS LA CREATION D'UNE NOUVELLE PROMOTION.
+-> GetData() de la bdd
+-> AfficherData() pour l'élève.
+-> Attendre qu'on clique sur <<Enregistrer>>.
+-> SaveDansBdd().
+
+------- Prise de Décision concernant la fiche de renseignement -------
+
+Contrôleur :
+
+-----> Page de prise de décision.
+-> Loggé en tant qu'administration.
+-> Attend le choix d'une promotion. (GetPromo() <fromUser>)
+-> Demande à la bdd la liste des élèves d'une promotion avec indication sur l'état de la fiche de renseignement (Validée, refusée, En attente de complément, Non traitée). GetFichePromo(int Promo)
+-> Attend le choix d'un élève (GetStudent() <fromUser>).
+-> Demande à la bdd la fiche de renseignement de l'élève sélectionné. GetFicheStudent(int Student, int Promo).
+-> Attend un choix au bas de la page : Accepter, Refuser, Mettre en demande de complément, Annuler.
+	|
+	--> Accepter : setFicheAccepted(int Student, int Promo)
+	--> Refuser : setFicheRefused(int Student, int Promo) +++ CreateNewFiche(int Student, int Promo) +++ addRefusedFiche(int Student, int Promo)
+	--> Mettre en demande de complément : SetFicheNeedingComplement(String WhatsNeeded)
+	--> Annuler : Abort.
+
+---------------- Initialisation d'une nouvelle année -----------------------
+
+Contrôleur :
+
+-------> Page création d'une nouvelle promotion
+
+-> Loggé en tant qu'administration
+-> Attend le clic sur <mise en place d'une nouvelle année>.
+-> Demande un nom pour l'année sous le format précis : aaaa-aaaa. getPromoFromAdm() -> String (9 chars)
+-> Demande à la bdd si la promo existe déjà :
+	|
+	-> Si oui : insère les modifs dans la promo courrante.
+	-> Propose de changer les champs dun élève : change(int Student, String champs)
+	|
+	-> Si non : Crée une nouvelle promo à partir des nouveaux inscrits sans promotion qui étaient stockés dans la base de donnée : createPromo(String promo), addPromo(String promo,int getPromolessStudents()) càd : ajoute un objet de type : <Elève, [Fiche de renseignement]>
+
+----------------------------------------------------------------------------------------------------
