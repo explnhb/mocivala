@@ -37,22 +37,22 @@ participant Controler
 participant DBHandler
 participant SheetHandler
 
-	note left : student_id contains the id of the student.
+	note left : student contains the id of the student.
 	activate Controler
-	--> Controler : modif_sheet(student_id)
+	--> Controler : changeSheet(student)
 	activate DBHandler
-	Controler --> DBHandler : retrieve_sheet(student_id)
-	DBHandler --> Controler : sheet = getLatestSheet(student_id)
+	Controler --> DBHandler : retrieveSheet(student)
+	DBHandler --> Controler : sheet = getLatestSheet(student)
 	activate SheetHandler
 	Controler --> SheetHandler : isChangeable(sheet)
 	SheetHandler --> Controler : changeable = isChangeable(sheet)
 	deactivate SheetHandler
 	alt changeable = true
-		<-- Controler : Show_Allow_Mod(sheet)
+		<-- Controler : showAllowMod(sheet)
 		--> Controler : update(sheet)
-		Controler --> DBHandler : update(sheet, student_id)
+		Controler --> DBHandler : update(sheet, student)
 	else changeable = false
-		<-- Controler : Show(sheet)
+		<-- Controler : show(sheet)
 	end
 	deactivate DBHandler
 	deactivate Controler
