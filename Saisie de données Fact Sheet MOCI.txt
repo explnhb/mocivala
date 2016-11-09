@@ -1,57 +1,60 @@
 Exo 1  : saisie de la fiche de renseignement :
 
-Contrôleur :
--> Possède déjà l'identité de l'élève.
--> Vérifie que la date de remplissage de la fiche de renseignement n'est pas dépassée. Si oui continuer, sinon abort (bdd handler).
--> Demande à la bdd si une fiche de renseignement existe déjà (bdd handler).
+ContrÃ´leur :
+-> PossÃ¨de dÃ©jÃ  l'identitÃ© de l'Ã©lÃ¨ve.
+-> VÃ©rifie que la date de remplissage de la fiche de renseignement n'est pas dÃ©passÃ©e. Si oui continuer, sinon abort (bdd handler).
+-> Demande Ã  la bdd si une fiche de renseignement existe dÃ©jÃ  (bdd handler).
 	|
 	-> (alt) Si oui : Propose de la changer. Si non : abort.
 		|
-		-> Si oui, getData() de la bdd, afficherData() pour l'élève.
-		-> Enregistrement par l'élève
+		-> Si oui, getData() de la bdd, afficherData() pour l'Ã©lÃ¨ve.
+		-> Enregistrement par l'Ã©lÃ¨ve
 		-> SaveDansBdd()
-	-> Si non : Créer une fiche pour l'élève dans la bdd.
+	-> Si non : CrÃ©er une fiche pour l'Ã©lÃ¨ve dans la bdd.
 
 
-==> Partir du principe qu'une fiche par étudiant existe déjà : Créer les fiches lors de l'arrivée d'une nouvelle promo.
-==> Lors d'un refus d'une fiche, créer une nouvelle fiche => Stockage de l'info stage refusé.
+==> Partir du principe qu'une fiche par Ã©tudiant existe dÃ©jÃ  : CrÃ©er les fiches lors de l'arrivÃ©e d'une nouvelle promo.
+==> Lors d'un refus d'une fiche, crÃ©er une nouvelle fiche => Stockage de l'info stage refusÃ©.
 
 --------------- Saisie de la fiche de renseignement ------------
 
-Contrôleur :
+ContrÃ´leur :
 
--> Possède déjà l'identité de l'élève.
--> Vérifie que la fiche de renseignement demandée est modifiable, sinon abort (bdd handler).
--> Une fiche de renseignement existe déjà : GERER DANS LA CREATION D'UNE NOUVELLE PROMOTION.
+-> PossÃ¨de dÃ©jÃ  l'identitÃ© de l'Ã©lÃ¨ve.
+-> VÃ©rifie que la fiche de renseignement demandÃ©e est modifiable, sinon abort (bdd handler).
+-> Une fiche de renseignement existe dÃ©jÃ  : GERER DANS LA CREATION D'UNE NOUVELLE PROMOTION.
 -> GetData() de la bdd
--> AfficherData() pour l'élève.
+-> AfficherData() pour l'Ã©lÃ¨ve.
 -> Attendre qu'on clique sur <<Enregistrer>>.
 -> SaveDansBdd().
 
 
-skinparam (Pour les paramètres d'affichage)
+skinparam (Pour les paramÃ¨tres d'affichage)
 
 @startuml
 
-participant Controleur
+participant Controler
 participant DBHandler
 participant SheetHandler
 
 	note left : student_id contains the id of the student.
-	activate Controleur
-	--> Controleur : modif_sheet(student_id)
+	activate Controler
+	--> Controler : modif_sheet(student_id)
 	activate DBHandler
-	Controleur --> DBHandler : retrieve_sheet(student_id)
-	DBHandler --> Controleur : sheet = getLatestSheet(student_id)
+	Controler --> DBHandler : retrieve_sheet(student_id)
+	DBHandler --> Controler : sheet = getLatestSheet(student_id)
 	activate SheetHandler
-	Controleur --> SheetHandler : isChangeable(sheet)
-	SheetHandler --> Controleur : changeable = isChangeable(sheet)
+	Controler --> SheetHandler : isChangeable(sheet)
+	SheetHandler --> Controler : changeable = isChangeable(sheet)
+	deactivate SheetHandler
 	alt changeable = true
-		<-- Controleur : Show_Allow_Mod(sheet)
-		--> Controleur : update(sheet)
-		Controleur --> DBHandler : update(sheet, student_id)
+		<-- Controler : Show_Allow_Mod(sheet)
+		--> Controler : update(sheet)
+		Controler --> DBHandler : update(sheet, student_id)
 	else changeable = false
-		<-- Controleur : Show(sheet)
+		<-- Controler : Show(sheet)
 	end
+	deavtivate DBHandler
+	deactivate Controler
 
 @enduml
