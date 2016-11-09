@@ -1,12 +1,12 @@
 @startuml
 
 -->Controler : verify(student)
-Controler-->BDHandler : loadSheet(student)
-BDHandler-->BDHandler : factSheet=getSheet(student)
-BDHandler-->Controler : factSheet
-Controler-->BDHandler : isValid(factSheet)
-BDHandler-->BDHandler : valid = isValid(factSheet)
-BDHandler-->Controler : valid
+Controler-->DBHandler : loadSheet(student)
+DBHandler-->DBHandler : factSheet=getSheet(student)
+DBHandler-->Controler : factSheet
+Controler-->DBHandler : isValid(factSheet)
+DBHandler-->DBHandler : valid = isValid(factSheet)
+DBHandler-->Controler : valid
 
 alt valid = true
 	<--Controler : Fiche déjà validée
@@ -17,15 +17,15 @@ else  valid = false
 	note left : Ce statut sera stocké dans une variable booleenne newValidity. Si elle est à false, une autre variable booleenne "refus" sera demandée à l'utilisateur.
 	
 	alt newValidity = true
-		Controler-->BDHandler : setValidity(true,factSheet)
+		Controler-->DBHandler : setValidity(true,factSheet)
 	else newValidity = false
 		alt refus = false
-			Controler --> BDHandler : setRefused(false,factSheet)
+			Controler --> DBHandler : setRefused(false,factSheet)
 		else refus = true
-			Controler --> BDHandler : setRefused(true,factSheet)
-			BDHandler --> BDHandler : setArchived(true,factSheet)
-			BDHandler --> BDHandler : archive(factSheet)
-			BDHandler --> BDHandler : createFactSheet(student)
+			Controler --> DBHandler : setRefused(true,factSheet)
+			DBHandler --> DBHandler : setArchived(true,factSheet)
+			DBHandler --> DBHandler : archive(factSheet)
+			DBHandler --> DBHandler : createFactSheet(student)
 		end
 	end
 end
