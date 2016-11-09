@@ -1,0 +1,102 @@
+@startuml
+
+class Controler{
+student : Student
+factSheet : Sheet
+promo : Promo
+
+loadSheet(student) : void
+isValid(factSheet) : void
+submit(factSheet) : void
+setValidity(boolean,factSheet) : void
+setRefused(boolean,factSheet) : void
+retrieveSheet(student) : void
+isChangeable(factSheet) : void
+showAllowMod(factSheet) : void
+update(Sheet,Student) :void
+show(factSheet) : void
+isPromoExisting(string) : void
+retrievePromo(string) : void
+createPromo(string) : void
+update(promo) : void
+show(promo) : void
+}
+
+class User{
+name : String
+mailAdress : String
+login : String
+}
+
+class DBHandler{
+student : Student
+factSheet : Sheet
+studentList : StudentList
+
+getSheet(student) : Sheet
+isValid(factSheet) : valid
+setArchived(factSheet) : void
+archive(factSheet) : void
+createFactSheet(student) : void
+getLatestSheet(student) : Sheet
+isPromoExisting(String) : boolean
+getPromo(String) : Promo
+getStudentList(String) : StudentList
+}
+
+class SheetHandler{
+factSheet : Sheet
+isChangeable(Sheet) : boolean
+}
+
+class PromoHandler{
+year : String
+student : Student
+promo : Promo
+
+getPromo(String) : Promo
+createPromo(String) : void
+getStudentList(String) : StudentList
+add(Promo,Student) : void
+update(Promo) : void
+}
+
+class Promo{
+year : String
+studentList : List<Student>
+}
+
+class Student{
+name : String
+}
+
+class Sheet{
+validity : boolean
+refused : boolean
+changeable : boolean
+data : String
+}
+
+package DB <<Database>>{
+	class DataBaseAPI{
+
+	}
+}
+
+Controler "1" -- "1" DBHandler
+Controler "1" <-up-> "1" User
+Controler "1" -- "1" SheetHandler
+Controler "1" -- "1" PromoHandler
+
+DBHandler "1" -- "1" PromoHandler
+DBHandler "1" -- "1" DataBaseAPI
+
+PromoHandler "1" -left- "many" Promo
+PromoHandler "1" -- "1" DataBaseAPI
+
+SheetHandler "1" -- "many" Sheet
+SheetHandler "1" -- "1" DataBaseAPI
+
+Promo "1" -left- "many" Student
+
+@enduml
