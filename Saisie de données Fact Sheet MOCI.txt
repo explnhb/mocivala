@@ -54,7 +54,7 @@ participant SheetHandler
 	else changeable = false
 		<-- Controler : Show(sheet)
 	end
-	deavtivate DBHandler
+	deactivate DBHandler
 	deactivate Controler
 
 @enduml
