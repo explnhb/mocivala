@@ -1,18 +1,33 @@
 @startuml
 
-Interface->Decision_Taker : verifie(student)
-Decision_Taker->BDD : loadSheet(student)
-Decision_Taker->BDD : loadStatus(student)
-BDD->BDD : FactSheet=getSheet(student)
-BDD->BDD : status=getStatus(student)
-BDD->Decision_Taker : FactSheet
-BDD->Decision_Taker : status
-alt status=Validated
-	Decision_Taker->Interface : Fiche déjà validée
-else 
-	Decision_Taker->Interface : submit(FactSheet)
-	Interface->Decision_Taker : newStatus
-	Decision_Taker->BDD : setStatus(newStatus)
+-->Controler : verify(student)
+Controler-->BDHandler : loadSheet(student)
+BDHandler-->BDHandler : factSheet=getSheet(student)
+BDHandler-->Controler : factSheet
+Controler-->BDHandler : isValid(factSheet)
+BDHandler-->BDHandler : valid = isValid(factSheet)
+BDHandler-->Controler : valid
+
+alt valid = true
+	<--Controler : Fiche déjà validée
+	
+else  valid = false
+	<--Controler : submit(factSheet)
+	-->Controler : Nouveau statut
+	note left : Ce statut sera stocké dans une variable booleenne newValidity. Si elle est à false, une autre variable booleenne "refus" sera demandée à l'utilisateur.
+	
+	alt newValidity = true
+		Controler-->BDHandler : setValidity(true,factSheet)
+	else newValidity = false
+		alt refus = false
+			Controler --> BDHandler : setRefused(false,factSheet)
+		else refus = true
+			Controler --> BDHandler : setRefused(true,factSheet)
+			BDHandler --> BDHandler : setArchived(true,factSheet)
+			BDHandler --> BDHandler : archive(factSheet)
+			BDHandler --> BDHandler : createFactSheet(student)
+		end
+	end
 end
 
 @enduml
