@@ -22,8 +22,8 @@ note left : aaaa_aaaa is a variable containing the promo year.
 	else PromoExists = false
 		Controler --> PromoHandler : CreatePromo(aaaa_aaaa)
 		PromoHandler --> PromoHandler : promo = CreatePromo(aaaa_aaaa)
-		PromoHandler --> DBHandler : GetStudentList(aaaa_aaaa)
-		DBHandler --> PromoHandler : StudentList = getStudentList(aaaa_aaaa)
+		PromoHandler --> DBHandler : getStudentList(promo)
+		DBHandler --> PromoHandler : StudentList = getStudentList(promo)
 		loop for each student in StudentList
             		PromoHandler --> PromoHandler : add(promo,student)
 		end
@@ -31,10 +31,10 @@ note left : aaaa_aaaa is a variable containing the promo year.
 
 	end
 	
-	<-- Controler : Show(promo)
-	--> Controler : SaveModif(promo)
-	Controler --> PromoHandler : SaveModif(promo)
-	PromoHandler --> DBHandler : SaveModif(promo)
+	<-- Controler : show(promo)
+	--> Controler : update(promo)
+	Controler --> PromoHandler : update(promo)
+	PromoHandler --> DBHandler : update(promo)
 	deactivate DBHandler
 	deactivate PromoHandler
 	deactivate Controler
