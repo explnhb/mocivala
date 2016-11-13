@@ -1,25 +1,23 @@
 @startuml
 
 [*]->TrouverUnStage
-TrouverUnStage->FicheDeRenseignement : Stage trouvé
+TrouverUnStage-down->FicheDeRenseignement : Stage trouvé
 state FicheDeRenseignement {
 	state InitialisationFiche
 	InitialisationFiche : Créer fiche vierge
 	state RécupérerFiche
 	RécupérerFiche : Charger ancienne fiche	
-	RécupérerFiche->RemplissageFiche
-	InitialisationFiche->RemplissageFiche : Faire remplir
+	RécupérerFiche-down->RemplissageFiche : Compléter
+	InitialisationFiche-down->RemplissageFiche : Faire remplir
 	state RemplissageFiche
 	RemplissageFiche : Remplissage par élève
 	RemplissageFiche : Remplissage par entreprise
-	RemplissageFiche->Validation : Faire valider
+	RemplissageFiche-down->ValidationFiche : Faire valider
 	state ValidationFiche
 	ValidationFiche : Validation du stage par TN
 }
-
-FicheDeRenseignement->NonValidée : Inadéquation
-
-FicheDeRenseignement->Validée : Ok
+ValidationFiche-up->NonValidée : Pas Validée
+ValidationFiche-down->EtablirConventionStage : Validée
 
 state NonValidée {
 	state Refus
@@ -29,24 +27,28 @@ state NonValidée {
 Refus->TrouverUnStage : Retrouver un stage
 DemandeDeComplément->RemplissageFiche : Compléter
 
-state Validée {
 	state EtablirConventionStage {
 		state InitialisationConvention
 		InitialisationConvention : Créer convention vierge
-		InitialisationConvention->Remplissage : Remplir
+		InitialisationConvention-down->Remplissage : Remplir
 		state Remplissage
 		Remplissage : Utiliser la fiche de renseignement pour remplir la convention
-		Remplissage->Signature : Signer
+		Remplissage-down->Buffer : Signer
+		Remplissage-down->Buffer : Signer
+		Remplissage-down->Buffer : Signer
 		state Signature {
 			state SignatureParEleve
 			state SignatureParTN
 			state SignatureParEntreprise
-			SignatureParEleve->ConventionSignée
-			SignatureParTN->ConventionSignée
-			SignatureParEntreprise->ConventionSignée
-			state ConventionSignée	
+			state Buffer
+			Buffer-down->SignatureParEleve : Eleve n'a pas signé
+			Buffer-down->SignatureParTN : TN n'a pas signé
+			Buffer-down->SignatureParEntreprise : Entreprise n'a pas signé
+			SignatureParEleve-up->Buffer : Délai
+			SignatureParTN-up->Buffer : Délai
+			SignatureParEntreprise-up->Buffer : Délai
+		}
+		Buffer-down->ConventionSignée: Tout le monde a signé
 	}
-
-
-
+	ConventionSignée-down->[*] : Prêt à effectuer son stage
 @enduml
